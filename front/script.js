@@ -37,5 +37,5 @@ addButton.onclick = async function addCheckUser(event) {
     const token = await resp.json()
 
     console.log(token.success)
+    
 }
-
