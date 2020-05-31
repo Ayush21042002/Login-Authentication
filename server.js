@@ -1,5 +1,6 @@
 const { Op } = require('sequelize')
 const express = require('express')
+const bcrypt = require('bcrypt')
 
 const {db,Users} = require('./db')
 
@@ -34,9 +35,11 @@ app.post('/users', async(req,res) =>{
     const username = req.body.username
     const password = req.body.password
 
+    const hashedpassword = await bcrypt.hash(password,10)
+
     const newUsers = await Users.create({
         username: username,
-        password: password
+        password: hashedpassword
     })
     res.status(200).send({ success: 'New task added'})
 })
@@ -47,8 +50,13 @@ app.post('/users/login', async(req,res) =>{
 
     const user = await Users.findByPk(username)
 
-    if(user == null || user.password != password)
-        res.status(400).send('error')
+    let token = {
+        success: true,
+        username: username
+    }
+
+    if(user == null || !(await bcrypt.compare(password,user.password)))
+        token.success = false
     
-    res.status(200).send('success')
+    res.send(JSON.stringify(token))
 })

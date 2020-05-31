@@ -33,15 +33,9 @@ addButton.onclick = async function addCheckUser(event) {
         },
         body: JSON.stringify({ username, password })
     })
-    
-    if (resp.status == 200) {
-        document.getElementById('username').value = ""
-        document.getElementById('password').value = ""
 
-        console.log("success")
-    }
-    else{
-        console.log("error")
-    }
+    const token = await resp.json()
+
+    console.log(token.success)
 }
 
